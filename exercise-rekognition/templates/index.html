@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Labels</title>
+</head>
+<body>
+    <h1>Image Labels</h1>
+    <div id="image-container"></div>
+
+    <script>
+        // Load data from Flask route
+        fetch('/data')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('image-container');
+
+                // Loop through each image in the JSON
+                for (const filename in data) {
+                    const labels = data[filename];
+
+                    const div = document.createElement('div');
+                    div.style.border = "1px solid #ccc";
+                    div.style.margin = "10px";
+                    div.style.padding = "10px";
+
+                    // Show the image
+                    const img = document.createElement('img');
+                    img.src = `/static/images/${filename}`;
+                    img.alt = filename;
+                    img.style.width = '300px';
+                    div.appendChild(img);
+
+                    // Show labels
+                    const ul = document.createElement('ul');
+                    labels.forEach(label => {
+                        const li = document.createElement('li');
+                        li.textContent = `${label.Name} (${(label.Confidence).toFixed(2)}%)`;
+                        ul.appendChild(li);
+                    });
+
+                    div.appendChild(ul);
+                    container.appendChild(div);
+                }
+            });
+    </script>
+</body>
+</html>
